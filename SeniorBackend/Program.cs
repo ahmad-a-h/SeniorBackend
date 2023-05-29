@@ -3,17 +3,24 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Identity;
+using SeniorBackend;
 using SeniorBackend.Models.IdentityModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddScoped(typeof(IUserServices), typeof(UserServices));
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddDbContext<facialRecognitionDbContext>();
+
+
 //Add Indentity service
 #region Indentity Service
 builder.Services.AddIdentity<App_User, App_Role>()

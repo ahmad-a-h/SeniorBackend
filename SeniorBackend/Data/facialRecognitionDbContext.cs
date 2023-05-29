@@ -4,9 +4,11 @@ using SeniorBackend.Controllers;
 using SeniorBackend.Models;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using SeniorBackend.Models.IdentityModels;
 
 namespace facialRecognitionBackend.Data;
-public class facialRecognitionDbContext : DbContext
+public class facialRecognitionDbContext : IdentityDbContext<App_User, App_Role, string>
 {
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -20,11 +22,13 @@ public class facialRecognitionDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
         //M to M Sub_Category <==> App_User
         builder.Entity<CourseStudent>().HasOne(key => key.Student)
             .WithMany(key => key.Courses).HasForeignKey(key => key.StudentsId);
         builder.Entity<CourseStudent>().HasOne(key => key.Course)
             .WithMany(key => key.Students).HasForeignKey(key => key.Coursesid);
+            
     }
 
     public DbSet<Course> Courses { get; set; } = null!;
