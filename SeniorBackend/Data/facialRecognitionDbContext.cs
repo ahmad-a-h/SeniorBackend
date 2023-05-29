@@ -22,6 +22,7 @@ public class facialRecognitionDbContext : IdentityDbContext<App_User, App_Role, 
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
         //M to M Sub_Category <==> App_User
         builder.Entity<CourseStudent>().HasOne(key => key.Student)
             .WithMany(key => key.Courses).HasForeignKey(key => key.StudentsId);

@@ -220,7 +220,6 @@ namespace SeniorBackend.Controllers
                             var studentDto = _mapper.Map<StudentDto>(student);
                             studentDto.face = await getFaceByStudentID(student.Id);
                             courseDto.Students.Add(studentDto);
-                            courseDto.Students.Add(studentDto);
                         }
                     }
                     return courseDto;
