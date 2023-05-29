@@ -12,6 +12,7 @@ namespace SeniorBackend.Models.DTOs.Course
         public string course_Description { get; set; } = null!;
         public string course_Instructor { get; set; } = null!;
 
+        public int Classid { get; set; }
         public classDto Class { get; set; }
 
         public List<StudentDto> Students { get; set; } = new List<StudentDto>();

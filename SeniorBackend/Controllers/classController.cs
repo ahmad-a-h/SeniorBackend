@@ -27,8 +27,6 @@ namespace SeniorBackend.Controllers
                 foreach (var c in classes)
                 {
                     c.Courses = e.Courses.Where(x => x.Classid == c.id).ToList();
-                    //var mapCourses = e.Courses.Where(x => x.Classid == c.id).Select(s => _mapper.Map<courseDtoForGetClass>(s)).ToList();
-                    //c.Courses = mapCourses;
                 }
                 return Ok(classes);
             }

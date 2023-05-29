@@ -6,6 +6,7 @@ using SeniorBackend.Models.DTOs.Session;
 using SeniorBackend.Models.DTOs.Course;
 using SeniorBackend.Models.DTOs.Student;
 using SeniorBackend.Models.DTOs.Class;
+using SeniorBackend.Models.DTOs.sendFace;
 
 namespace SeniorBackend.Controllers
 {
@@ -19,14 +20,29 @@ namespace SeniorBackend.Controllers
         }
 
         [HttpGet("/getAllSessions")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAllSessions()
         {
             using (facialRecognitionDbContext e = new facialRecognitionDbContext())
             {
-                var sessionsList = e.Session.ToList();
-                var sessions = _mapper.Map<List<sessionDto>>(sessionsList);
-                //var studentDtos = students.Select(s => _mapper.Map<StudentDto>(s)).ToList();
-                return Ok(sessionsList);
+                try
+                {
+                    var session = e.Session.ToList();
+                    var mappedSession = _mapper.Map<List<GetCourseForSessionDto>>(session);
+
+
+                    foreach (var item in mappedSession)
+                    {
+                        item.Course = await getCourseInfo(item.Coursesid);
+                        item.Class = await getClassInfo(item.Classesid);
+                    }
+
+                    return Ok(mappedSession);
+                }
+                catch (Exception x)
+                {
+
+                    return BadRequest(x.Message);
+                }
 
             }
 
@@ -51,7 +67,7 @@ namespace SeniorBackend.Controllers
         //}
 
         [HttpGet("/getSessionsByCourseId{Id}")]
-        public async Task<ActionResult<IEnumerable<Session>>> Get(int Id)
+        public async Task<IActionResult> Get(int Id)
         {
             using (facialRecognitionDbContext e = new facialRecognitionDbContext())
             {
@@ -202,6 +218,8 @@ namespace SeniorBackend.Controllers
                         if (student != null)
                         {
                             var studentDto = _mapper.Map<StudentDto>(student);
+                            studentDto.face = await getFaceByStudentID(student.Id);
+                            courseDto.Students.Add(studentDto);
                             courseDto.Students.Add(studentDto);
                         }
                     }
@@ -212,7 +230,7 @@ namespace SeniorBackend.Controllers
 
                     return null/*BadRequest(x.Message)*/;
                 }
-
+                    
             }
         }
         public async Task<classDto> getClassInfo(int Id)
@@ -233,6 +251,25 @@ namespace SeniorBackend.Controllers
                 }
                 
     }
+        }
+        public async Task<faceDto> getFaceByStudentID(int Id)
+        {
+            using (facialRecognitionDbContext e = new facialRecognitionDbContext())
+            {
+
+                try
+                {
+                    var face = e.FaceEncoding.First(x => x.StudentsId == Id);
+                    var faceDto = _mapper.Map<faceDto>(face);
+                    return faceDto;
+                }
+                catch (Exception x)
+                {
+
+                    return null;
+                }
+
+            }
         }
         #endregion
 

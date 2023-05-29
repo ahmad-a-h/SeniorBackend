@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SeniorBackend.Models.DTOs.Student;
+using System.ComponentModel.DataAnnotations;
 
 namespace SeniorBackend.Models.DTOs.Course
 {

@@ -2,8 +2,9 @@ using AutoMapper;
 using facialRecognitionBackend.Data;
 using Microsoft.AspNetCore.Mvc;
 using SeniorBackend.Models;
+using SeniorBackend.Models.DTOs.Class;
 using SeniorBackend.Models.DTOs.Course;
-using SeniorBackend.Models.DTOs.Session;
+using SeniorBackend.Models.DTOs.sendFace;
 using SeniorBackend.Models.DTOs.Student;
 using System;
 using System.Collections.Generic;
@@ -34,11 +35,13 @@ namespace SeniorBackend.Controllers
                 {
                   
                     var idsList = e.CourseStudent.Where(x => x.Coursesid == s.id).ToList();
+                    s.Class = await getClassInfo(s.Classid);
                     foreach (var idList in idsList)
                     {
                         var c = await e.Students.FindAsync(idList.StudentsId);
-                        var cDto = _mapper.Map<StudentDto>(c);
-                        s.Students.Add(cDto);
+                        var studentDto = _mapper.Map<StudentDto>(c);
+                        studentDto.face = await getFaceByStudentID(c.Id);
+                        s.Students.Add(studentDto);
                     }
                 }
                 return Ok(courseDto);
@@ -47,7 +50,7 @@ namespace SeniorBackend.Controllers
 
         }
         [HttpGet("/getCourseById/{Id}")]
-        public ActionResult<IEnumerable<Course>> Get(int Id)
+        public async Task<IActionResult> Get(int Id)
         {
             using (facialRecognitionDbContext e = new facialRecognitionDbContext())
             {
@@ -64,6 +67,7 @@ namespace SeniorBackend.Controllers
                         if (student != null)
                         {
                             var studentDto = _mapper.Map<StudentDto>(student);
+                            studentDto.face = await getFaceByStudentID(student.Id);
                             courseDto.Students.Add(studentDto);
                         }
                     }
@@ -164,5 +168,47 @@ namespace SeniorBackend.Controllers
 
             return Ok();
         }
+        #region private methods
+        private async Task<classDto> getClassInfo(int Id)
+        {
+            using (facialRecognitionDbContext e = new facialRecognitionDbContext())
+            {
+
+                try
+                {
+                    var classInfo = await e.Classes.FindAsync(Id);
+                    var classMapper = _mapper.Map<classDto>(classInfo);
+                    return classMapper;
+                }
+                catch (Exception x)
+                {
+
+                    return null;
+                }
+
+            }
+        }
+        private async Task<faceDto> getFaceByStudentID(int Id)
+        {
+            using (facialRecognitionDbContext e = new facialRecognitionDbContext())
+            {
+
+                try
+                {
+                    var face = e.FaceEncoding.First(x => x.StudentsId == Id);
+                    var faceDto = _mapper.Map<faceDto>(face);
+                    return faceDto;
+                }
+                catch (Exception x)
+                {
+
+                    return null;
+                }
+
+            }
+        }
+        #endregion
+
     }
+
 }

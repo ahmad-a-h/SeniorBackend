@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using facialRecognitionBackend.Data;
 
@@ -10,9 +11,10 @@ using facialRecognitionBackend.Data;
 namespace SeniorBackend.Migrations
 {
     [DbContext(typeof(facialRecognitionDbContext))]
-    partial class facialRecognitionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230523193416_changed from datetime to string")]
+    partial class changedfromdatetimetostring
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

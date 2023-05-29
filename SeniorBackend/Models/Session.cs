@@ -8,9 +8,9 @@ namespace SeniorBackend.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public DateTime startDateTime { get; set; }
+        public string startDateTime { get; set; }
         [Required]
-        public DateTime endDateTime { get; set; }
+        public string endDateTime { get; set; }
 
         [Required]
         public string Title { get; set; }

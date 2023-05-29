@@ -1,9 +1,11 @@
-﻿namespace SeniorBackend.Models.DTOs.Session
+﻿using SeniorBackend.Models.DTOs.Class;
+
+namespace SeniorBackend.Models.DTOs.Session
 {
     public class sessionDto
     {
-        public DateTime endDateTime { get; set; }
-        public DateTime startDateTime { get; set; }
+        public string endDateTime { get; set; }
+        public string startDateTime { get; set; }
         public string Title { get; set; }
         public int courseID { get; set; }
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SeniorBackend.Migrations;
 using SeniorBackend.Models;
 using SeniorBackend.Models.DTOs.Course;
+using SeniorBackend.Models.DTOs.sendFace;
 using SeniorBackend.Models.DTOs.Student;
 
 namespace SeniorBackend.Controllers
@@ -30,9 +31,10 @@ namespace SeniorBackend.Controllers
                 foreach (var student in studentDtos)
                 {
                     var face = e.FaceEncoding.FirstOrDefault(x => x.StudentsId == student.Id);
+                    var faceDto = _mapper.Map<faceDto>(face);
                     if (face != null)
                     {
-                        student.face = face;
+                        student.face = faceDto;
                     }
                 }
                 

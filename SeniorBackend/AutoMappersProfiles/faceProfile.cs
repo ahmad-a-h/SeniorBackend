@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using SeniorBackend.Models;
-using SeniorBackend.Models.DTOs.Class;
 using SeniorBackend.Models.DTOs.sendFace;
 
 namespace SeniorBackend.AutoMappersProfiles
 {
-    public class classProfile : Profile
+
+    public class faceProfile : Profile
     {
-        public classProfile()
+        public faceProfile()
         {
-            CreateMap<Class, faceDto>();
+            CreateMap<Face, faceDto>();
         }
     }
 }
