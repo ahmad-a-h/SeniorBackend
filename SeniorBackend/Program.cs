@@ -2,6 +2,8 @@ using facialRecognitionBackend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
+using SeniorBackend.Models.IdentityModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+//Add Indentity service
+#region Indentity Service
+builder.Services.AddIdentity<App_User, App_Role>()
+    .AddEntityFrameworkStores<facialRecognitionDbContext>()
+    .AddDefaultTokenProviders();
+#endregion
+
 //var configuration = new ConfigurationBuilder()
 //                .SetBasePath(Directory.GetCurrentDirectory())
 //                .AddJsonFile("appsettings.json")
@@ -51,9 +60,11 @@ else
 
 app.UseHttpsRedirection();
 
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.UseCors(x => x
                .AllowAnyOrigin()
                .AllowAnyMethod()
