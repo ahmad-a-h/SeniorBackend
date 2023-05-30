@@ -83,7 +83,7 @@ namespace SeniorBackend.Controllers
         }
 
         [HttpPost("/createCourse")] 
-        public ActionResult<IEnumerable<courseDto>> CreateCourse([FromBody] Course course)
+        public ActionResult<IEnumerable<courseDto>> CreateCourse([FromBody] postCourseDto course)
         {
             var courseObj = new Course();
             using (facialRecognitionDbContext e = new facialRecognitionDbContext())
@@ -95,7 +95,8 @@ namespace SeniorBackend.Controllers
                     {
                         try
                         {
-                            e.Courses.Add(course);
+                            var rc = _mapper.Map<Course>(course);
+                            e.Courses.Add(rc);
                             e.SaveChanges();
                             return Ok();
                         }

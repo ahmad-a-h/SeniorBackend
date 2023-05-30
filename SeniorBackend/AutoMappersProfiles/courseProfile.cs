@@ -10,6 +10,7 @@ namespace SeniorBackend.AutoMappersProfiles
         {
             CreateMap<Course, courseDto>();
             CreateMap<Course, courseDtoForGetClass>();
+            CreateMap<postCourseDto, Course>();
         }
     }
 }
