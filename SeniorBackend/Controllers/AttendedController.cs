@@ -3,6 +3,7 @@ using facialRecognitionBackend.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SeniorBackend.Models;
+using SeniorBackend.Models.DTOs.Attendance;
 using SeniorBackend.Models.DTOs.Class;
 using SeniorBackend.Models.DTOs.Student;
 
@@ -34,33 +35,29 @@ namespace SeniorBackend.Controllers
 
         //}
 
-        [HttpGet("/getStudentsAttendedBySessionId{Id}")]
-        public Task<Attendance> Get(int Id)
+        [HttpGet("/getStudentsAttendenceBySessionId{Id}")]
+        public IActionResult Get(int Id)
         {
             using (facialRecognitionDbContext context = new facialRecognitionDbContext())
             {
-                var list = context.Attendance.Where(x => x.Id == Id);
-                //foreach (var item in list)
-                //{
-                //    item.Student = GetStudent(item.studentId);
-                //    //item.Session = 
-                //}
-                //return Ok(list.ToList());
+                var list = context.Attendance.Where(x => x.Sessionid == Id);
+                foreach (var item in list)
+                {
+                    item.Student = GetStudent(item.studentId);
+                    item.Session =  context.Session.Find(Id);
+                }
+                return Ok(list);
             }
         }
-        [HttpPost("/createClass")]
-        public ActionResult<IEnumerable<Course>> CreateCourse([FromBody] classDto Classes)
+        [HttpPost("/createAttendance")]
+        public ActionResult<IEnumerable<Course>> CreateAttendance([FromBody] RequestAttendance request)
         {
-            var classes = new Class();
             using (facialRecognitionDbContext e = new facialRecognitionDbContext())
             {
                 try
                 {
-                    classes.floor_nb = Classes.floor_nb;
-                    classes.class_nb = Classes.class_nb;
-                    classes.building= Classes.building;
-
-                    e.Classes.Add(classes);
+                    var attendance = _mapper.Map<Attendance>(request);
+                    e.Attendance.Add(attendance);
                     e.SaveChanges();
                     return Ok();
                 }
@@ -71,58 +68,14 @@ namespace SeniorBackend.Controllers
 
             }
         }
-        
-        [HttpDelete("/deleteclass")]
-        public ActionResult<IEnumerable<Class>> deleteClass(int classId)
-        {
-
-            using (facialRecognitionDbContext e = new facialRecognitionDbContext())
-            {
-                var findClass = e.Classes.FirstOrDefault(x => x.id == classId);
-                if (findClass == null)
-                    return NotFound();
-
-                e.Classes.Remove(findClass);
-                e.SaveChanges();
-                return Ok();
-            }
-        }
-        [HttpPut("/editClass{id}")]
-        public IActionResult UpdateGrpName(int? id, [FromBody] classDto Classes)
-        {
-            using (facialRecognitionDbContext e = new facialRecognitionDbContext())
-            {
-                var ID = e.Classes.Find(id);
-                if (id == null)
-                {
-                    return NotFound();
-                }
-                ID.floor_nb = Classes.floor_nb;
-                ID.class_nb = Classes.class_nb;
-                ID.building = Classes.building;
-                e.Classes.Add(ID);
-                e.SaveChanges();
-            }
-
-            return Ok();
-        }
         #region private methods
-        public ActionResult<IEnumerable<Student>> GetStudent(int Id)
+        private Student GetStudent(int Id)
         {
             using (facialRecognitionDbContext e = new facialRecognitionDbContext())
             {
-                try
-                {
                     var student = e.Students.First(x => x.Id == Id);
                     var mappedCourse = _mapper.Map<StudentDto>(student);
-                    return Ok(mappedCourse);
-                }
-                catch (Exception x)
-                {
-
-                    return BadRequest(x.Message);
-                }
-
+                    return student; 
             }
         }
         #endregion
