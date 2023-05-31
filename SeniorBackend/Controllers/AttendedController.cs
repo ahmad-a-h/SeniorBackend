@@ -41,7 +41,8 @@ namespace SeniorBackend.Controllers
             using (facialRecognitionDbContext context = new facialRecognitionDbContext())
             {
                 var list = context.Attendance.Where(x => x.Sessionid == Id);
-                foreach (var item in list)
+                var listDtos = _mapper.Map<ICollection<AttendanceDto>>(list);
+                foreach (var item in listDtos)
                 {
                     item.Student = GetStudent(item.studentId);
                     item.Session =  context.Session.Find(Id);
